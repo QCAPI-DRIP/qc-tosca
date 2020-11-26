@@ -62,6 +62,20 @@ topology_template:
               object_type: "SubTopology"
       type: "tosca.nodes.QC.VM.topology"
 
+  workflows:
+    provision:
+      description: Workflow to deploy the topology
+      steps:
+        create_vms:
+          target: topology
+          activities:
+            - set_state: creating
+            - call_operation: tosca.interfaces.QC.CloudsStorm.create
+            - set_state: created
+            - set_state: configuring
+            - call_operation: tosca.interfaces.QC.CloudsStorm.configure
+            - set_state: configured
+
 
 description: "TOSCA example"
 imports:

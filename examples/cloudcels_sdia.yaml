@@ -1,6 +1,5 @@
 tosca_definitions_version: "tosca_simple_yaml_1_0"
 topology_template:
-
   node_templates:
     compute:
       properties:
@@ -24,10 +23,38 @@ topology_template:
         Standard:
           create: "dumy.yaml"
       type: "tosca.nodes.QC.VM.Compute"
-
+    kubernetes:
+      requirements:
+      - host:
+          capability: "tosca.capabilities.QC.VM.topology"
+          node: "topology"
+          relationship: "tosca.relationships.HostedOn"
+      interfaces:
+        Standard:
+          configure:
+            inputs:
+              repository: "https://github.com/QCDIS/playbooks.git"
+              resources:
+              - "k8s/set_master_k8s_cluster.yaml"
+              - "k8s/join_k8s_cluster.yaml"
+              - "k8s/create_k8s_dashboard.yaml"
+          create:
+            inputs:
+              repository: "https://github.com/QCDIS/playbooks.git"
+              resources:
+              - "ec2/ec2_mount.yaml"
+              - "docker/install_docker.yaml"
+              - "k8s/install_k8s_prerequisites.yaml"
+              - "k8s/install_k8s.yaml"
+          delete:
+            inputs:
+              repository: "https://github.com/QCDIS/playbooks.git"
+              resources:
+              - "k8s/k8s_delete.yaml"
+      type: "tosca.nodes.QC.docker.Orchestrator.Kubernetes"
     topology:
       properties:
-        domain: "Frankfurt"
+        domain: "Ireland"
         provider: "EC2"
       requirements:
       - vm:
@@ -61,8 +88,10 @@ topology_template:
               code_type: "SEQ"
               object_type: "SubTopology"
       type: "tosca.nodes.QC.VM.topology"
-
-
+      artifacts:
+        provisioned_files:
+          required: false
+          type: "string"
 description: "TOSCA example"
 imports:
 - nodes: "https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/types/nodes.yaml"

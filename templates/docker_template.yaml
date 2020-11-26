@@ -13,19 +13,20 @@ repositories:
 description: >
   TOSCA example
   
-
 topology_template:
-
-  node_templates:        
-    ws-pema:
+  node_templates:     
+    DOCKER_NAME:
         type: tosca.nodes.QC.Container.Application.Docker
         properties:
-            ports: 
-            - "30001:8080"   
+            environment:
+              ENV_1: VAL
+              ENV_2: VAL
+            ports:
+              - "30000:8888"              
         artifacts:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
-                file:  alogo53/ws-pema-lifewatch
+                file:  mongo
                 repository: docker_hub                 
         interfaces:
             Kubernetes:
@@ -55,27 +56,4 @@ topology_template:
                     inputs:
                         repository: https://github.com/QCAPI-DRIP/playbooks.git   
                         resources:
-                            - k8s/get_info_service.yml                
-                
-      
-#     topology:
-#         type: tosca.nodes.QC.VM.topology
-#         interfaces:
-#             CloudsStorm:
-#                 provision:
-#                     inputs:
-#                         code_type: SEQ
-#                         object_type: SubTopology
-#         properties:
-#             domain: UvA (Amsterdam, The Netherlands) XO Rack
-#             provider: ExoGENI
-
-
-  policies:
-    - scalability:
-        type: tosca.policies.QC.Performance.CPU
-        targets: [ ws-pema ]
-        properties:
-          constraint_name: "cpu load"
-          max_value: 80
-      
+                            - k8s/get_info_service.yml      

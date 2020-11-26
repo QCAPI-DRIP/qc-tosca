@@ -65,8 +65,8 @@ interface_types:
   tosca.interfaces.QC.Standard:
     derived_from: tosca.interfaces.node.lifecycle.Standard
     inputs:
-      inventory_file:
-        type: string
+      inventory_hosts:
+        type: list
         required: false
       resources:
         type: list
@@ -94,7 +94,31 @@ interface_types:
     info:
       description: get information on pods,services or deployments
       
-      
+
+
+  tosca.interfaces.QC.Openstack:
+    derived_from: tosca.interfaces.QC.Standard
+    inputs:
+      os_access_token:
+        type: tosca.datatypes.QC.Credential
+        required: false
+      os_auth_url:
+        type: string
+        required: true
+      os_project_id:
+        type: string
+        required: true
+      os_auth_type:
+        type: string
+        required: true
+      os_identity_provider:
+        type: string
+        required: true
+      os_protocol:
+        type: string
+        required: true
+    info:
+      description: get information
      
       
 #tosca.interfaces.node.lifecycle.Standard:
@@ -108,5 +132,4 @@ interface_types:
   #stop:
     #description: Standard lifecycle stop operation.
   #delete:
-    #description: Standard lifecycle delete operation.      
-  
+    #description: Standard lifecycle delete operation.
